@@ -1,8 +1,15 @@
 const http = require('http');
 const https = require('https');
-
+const { URL } = require('url');
 
 module.exports = {
+
+    fetch: function(url){       
+        const myURL = new URL(url);
+        console.log(myURL.protocol);
+        // Prints https:
+
+    },
     get: function(url) {
 
         //'http://nodejs.org/dist/index.json'
@@ -15,24 +22,11 @@ module.exports = {
                 error = new Error(`Request Failed.\n` +
                     `Status Code: ${statusCode}`);
             }
-            //  else if (!/^application\/json/.test(contentType)) {
-            //     error = new Error(`Invalid content-type.\n` +
-            //         `Expected application/json but received ${contentType}`);
-            // }
-            // if (error) {
-            //     console.log(error.message);
-            //     // consume response data to free up memory
-            //     res.resume();
-            //     return;
-            // }
-
             res.setEncoding('utf8');
             let rawData = '';
             res.on('data', (chunk) => rawData += chunk);
             res.on('end', () => {
                 try {
-                    // let parsedData = JSON.parse(rawData);
-                    // console.log(parsedData);
                     console.log(rawData);
                 } catch (e) {
                     console.log(e.message);

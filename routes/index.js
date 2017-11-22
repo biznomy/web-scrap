@@ -1,11 +1,15 @@
-var httpUtil = require("../HttpUtil");
+var schedular = require("../utils/SchedularUtil");
 var express = require('express');
 var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-httpUtil.get('http://technolabs.in')
-  res.render('index', { title: 'Express' });
+  schedular.scrap();
+  res.render('index', { title: 'Web Scrap' });
 });
+
+
+
+
 
 module.exports = router;
