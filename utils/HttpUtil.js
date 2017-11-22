@@ -5,14 +5,19 @@ const { URL } = require('url');
 module.exports = {
 
     fetch: function(url){       
-        const myURL = new URL(url);
-        console.log(myURL.protocol);
-        // Prints https:
-
+        const myURL = new URL(url);        
+        if("http:" == myURL.protocol){// Prints http:
+            // console.log(myURL.protocol);
+            return 0;
+        }else if("https:" == myURL.protocol){// Prints https:
+            // console.log(myURL.protocol);
+            return 1;
+        }else{
+            console.log(myURL.protocol);
+            return -1;
+        }
     },
-    get: function(url) {
-
-        //'http://nodejs.org/dist/index.json'
+    get: function(url, callback, _id) {       
         http.get(url, (res) => {
             const statusCode = res.statusCode;
             const contentType = res.headers['content-type'];
@@ -27,7 +32,7 @@ module.exports = {
             res.on('data', (chunk) => rawData += chunk);
             res.on('end', () => {
                 try {
-                    console.log(rawData);
+                    callback(rawData.toString('utf8'), _id);
                 } catch (e) {
                     console.log(e.message);
                 }
@@ -38,23 +43,20 @@ module.exports = {
 
 
     },
-    secure: function(url, callback, id, keyword) {
+    secure: function(url, callback, _id) {
 
         https.get(url, (res) => {
-            // console.log('url : ' , url);
-            // console.log('statusCode:', res.statusCode);
             var response = '';
             if (res.statusCode == 200) {
                 res.on('data', (d) => {
                     response+=d;
                 });
                 res.on('end', () => {
-                    // console.log(response.toString());
-                    callback(response.toString('utf8'), id, keyword);
+                    callback(response.toString('utf8'), _id);
                 });
             }
         }).on('error', (e) => {
-            console.error(e);
+            console.log(`Got error: ${e.message}`);
         });
 
         

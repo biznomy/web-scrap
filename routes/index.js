@@ -4,7 +4,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  schedular.scrap();
+  schedular.scrapStage1();
   res.render('index', { title: 'Web Scrap' });
 });
 
