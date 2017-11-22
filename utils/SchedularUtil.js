@@ -64,7 +64,7 @@ var scheduleUtil = {
                 if (!err) {
                     info.detail = data;
                     info.status = true;
-                    info.tags.push("complete");
+                    info.tags.push("stage1");
                     info.save();
                     console.log(info);                                    
                 } else {
