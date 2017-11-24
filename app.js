@@ -10,6 +10,7 @@ mongoose.connect('mongodb://localhost:27017/web-scrap',  { useMongoClient: true 
 var index = require('./routes/index');
 var webpage = require('./routes/Webpage');
 var users = require('./routes/users');
+var schedular = require('./utils/SchedularUtil');
 
 var app = express();
 
@@ -28,6 +29,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 app.use('/webpage', webpage);
+app.use('/start', function(req, res){
+  schedular.scrapStage1();
+  res.status(200).json({messgae : 'success'});
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 var webpagesSchema = new Schema({
     'detail': { type: String, required: false },
     'url': { type: String, required: true },
+    'state':{ type: String, required: false },
     'status': {},
     'tags': [],
     'createdOn': { type: Date, default: Date.now },

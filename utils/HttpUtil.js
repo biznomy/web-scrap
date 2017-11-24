@@ -1,10 +1,18 @@
 const http = require('http');
 const https = require('https');
 const { URL } = require('url');
+const dn = require('dn');
 
 module.exports = {
 
     fetch: function(url){       
+
+        // dn.dns(url, function (err, data) {
+        //     console.log(err);
+        //     console.log(JSON.stringify(data));
+        // });
+
+        if(url.indexOf('http') == -1){url= 'http://'+ url;}
         const myURL = new URL(url);        
         if("http:" == myURL.protocol){// Prints http:
             // console.log(myURL.protocol);
@@ -56,7 +64,8 @@ module.exports = {
                 });
             }
         }).on('error', (e) => {
-            console.log(`Got error: ${e.message}`);
+            callback(e.message.toString('utf8'), _id);
+            
         });
 
         

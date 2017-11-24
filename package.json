@@ -9,6 +9,7 @@
     "body-parser": "~1.18.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
+    "dn": "^0.1.5",
     "express": "~4.15.5",
     "hbs": "~4.0.1",
     "mongoose": "^4.13.4",

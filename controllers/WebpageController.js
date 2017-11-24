@@ -3,7 +3,7 @@ const queryUtil = require('../utils/QueryUtil');
 
 module.exports = {
 
-    list: function(req, res) {
+    list: function (req, res) {
 
         var limit;
         if (queryUtil) {
@@ -17,7 +17,7 @@ module.exports = {
                 .limit(limit.limit)
                 .skip(limit.skip)
                 .populate('updatedBy')
-                .exec(function(err, info) {
+                .exec(function (err, info) {
                     if (err) {
                         return res.status(500).json({
                             message: 'Error when getting Webpage.',
@@ -33,7 +33,7 @@ module.exports = {
                 .populate('updatedBy')
                 .limit(limit.limit)
                 .skip(limit.skip)
-                .exec(function(err, info) {
+                .exec(function (err, info) {
                     if (err) {
                         return res.status(500).json({
                             message: 'Error when getting Webpage.',
@@ -47,7 +47,7 @@ module.exports = {
             WebpageModel.find(req.query)
                 .limit(limit.limit)
                 .skip(limit.skip)
-                .exec(function(err, info) {
+                .exec(function (err, info) {
                     if (err) {
                         return res.status(500).json({
                             message: 'Error when getting Webpage.',
@@ -59,9 +59,9 @@ module.exports = {
         }
     },
 
-    show: function(req, res) {
+    show: function (req, res) {
         var id = req.params.id;
-        WebpageModel.findById(id, function(err, info) {
+        WebpageModel.findById(id, function (err, info) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting Webpage.',
@@ -77,12 +77,12 @@ module.exports = {
         });
     },
 
-    create: function(req, res) {
+    create: function (req, res) {
 
         if (req.body) {
             var Webpage = new WebpageModel(req.body);
 
-            Webpage.save(function(err, info) {
+            Webpage.save(function (err, info) {
                 if (err) {
                     return res.status(500).json({
                         message: 'Error when creating Webpage',
@@ -99,26 +99,41 @@ module.exports = {
             }
 
             WebpageModel.find(req.body.query)
-            .limit(limit.limit)
-            .skip(limit.skip)
-            .exec(function(err, info) {
-                if (err) {
-                    return res.status(500).json({
-                        message: 'Error when getting Webpage.',
-                        error: err
-                    });
-                }
-                return res.status(200).json(info);
-            });
+                .limit(limit.limit)
+                .skip(limit.skip)
+                .exec(function (err, info) {
+                    if (err) {
+                        return res.status(500).json({
+                            message: 'Error when getting Webpage.',
+                            error: err
+                        });
+                    }
+                    return res.status(200).json(info);
+                });
         }
 
     },
 
-    update: function(req, res) {
+    createBulk: function (req, res) {
+
+        var webpages = req.body;
+        for(var i in webpages){
+            var Webpage = new WebpageModel(webpages[i]);            
+            Webpage.save(function (err, info) {
+                if (err) {
+                    console.log("err : ", err);                    
+                }
+                console.log("success : ", info._id);                    
+            });
+        }      
+        return res.status(200);
+    },
+
+    update: function (req, res) {
 
         var id = req.params.id;
 
-        WebpageModel.findByIdAndUpdate(id, req.body, { new: true }, function(err, info) {
+        WebpageModel.findByIdAndUpdate(id, req.body, { new: true }, function (err, info) {
             if (err)
                 return res.status(400).json({ 'error': err });
             else
@@ -126,9 +141,9 @@ module.exports = {
         });
     },
 
-    remove: function(req, res) {
+    remove: function (req, res) {
         var id = req.params.id;
-        WebpageModel.findByIdAndRemove(id, function(err, info) {
+        WebpageModel.findByIdAndRemove(id, function (err, info) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when deleting the Webpage.',
@@ -138,9 +153,9 @@ module.exports = {
             return res.status(204).json();
         });
     },
-    getCount: function(req, res) {
+    getCount: function (req, res) {
         var search = req.params.search;
-        WebpageModel.count({firstname : search}, function(err, info) {
+        WebpageModel.count({ firstname: search }, function (err, info) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when counting the Webpage.',
