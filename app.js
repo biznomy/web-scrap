@@ -30,9 +30,10 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/webpage', webpage);
 app.use('/start', function(req, res){
-  schedular.scrapStage1();
+  
   res.status(200).json({messgae : 'success'});
 });
+schedular.scrapStage1();
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
