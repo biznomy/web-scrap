@@ -7,6 +7,7 @@ var webpagesSchema = new Schema({
     'state':{ type: String, required: false },
     'status': {},
     'tags': [],
+    'process' : { type : Boolean, default : false},
     'createdOn': { type: Date, default: Date.now },
     'updatedOn': { type: Date, default: Date.now }    
 });

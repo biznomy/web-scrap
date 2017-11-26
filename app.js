@@ -5,7 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require("mongoose");
-mongoose.connect('mongodb://localhost:27017/web-scrap',  { useMongoClient: true });
+mongoose.connect('mongodb://localhost:27017/web-start',  { useMongoClient: true });
 
 var index = require('./routes/index');
 var webpage = require('./routes/Webpage');
@@ -30,10 +30,12 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/webpage', webpage);
 app.use('/start', function(req, res){
-  
   res.status(200).json({messgae : 'success'});
 });
 schedular.scrapStage1();
+
+// schedular.getCount();
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

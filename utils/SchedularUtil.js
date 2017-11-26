@@ -34,7 +34,7 @@ var scheduleUtil = {
                 const query = { $or: [{ 'status': false }, { 'status': null }] };                
                 // const query = { $and: [ { "tag": { $not: { $in: ["recheck"] } } }, { $or: [ { "status": false }, { "status": null } ] } ] };                
                 const fields = [];
-                const skipSteps = { skip: step }
+                const skipSteps = { skip: step };
                 WebpageModel.findOne(query, fields, skipSteps, function(err, info) {                    
                     if (err) {
                         console.log(err);
@@ -77,6 +77,46 @@ var scheduleUtil = {
                     console.log(err);
                 }
             });
+        },
+        getCount : function(){
+
+            schedule.scheduleJob('* * * * * *', function() {
+
+                const query = { process: false };
+                const fields = [];
+                const skipSteps = { skip: 0 };            
+                WebpageModel.findOne(query, fields, skipSteps, function(err, info){
+                    if(!err && info != null){
+                        console.log('info', info);
+                        scheduleUtil.getUrl(info);
+                        info.process = true;
+                        info.save();
+                    }else{
+                        console.log('err', err);
+                    }
+                });
+                
+            });
+
+            
+
+
+        },
+        getUrl : function(webpage){
+            console.log(webpage);
+            WebpageModel.find({'url' : webpage.url} , function(err, webpages) {
+                if (!err && webpages.length > 3) {                    
+                    webpages.forEach(function(data, index){
+                        data.tags = ["more-than-three"];
+                        data.save();
+                        console.log(data);
+                    });
+                    console.log(JSON.stringify(webpages));
+                } else {
+                    console.log(err);
+                }
+            });
+
         }
         
     }
