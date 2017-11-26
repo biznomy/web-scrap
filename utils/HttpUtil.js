@@ -5,25 +5,24 @@ const dn = require('dn');
 
 module.exports = {
 
-    fetch: function(url){       
-
-        // dn.dns(url, function (err, data) {
-        //     console.log(err);
-        //     console.log(JSON.stringify(data));
-        // });
-
-        if(url.indexOf('http') == -1){url= 'http://'+ url;}
-        const myURL = new URL(url);        
-        if("http:" == myURL.protocol){// Prints http:
-            // console.log(myURL.protocol);
-            return 0;
-        }else if("https:" == myURL.protocol){// Prints https:
-            // console.log(myURL.protocol);
-            return 1;
-        }else{
-            console.log(myURL.protocol);
-            return -1;
+    fetch: function(url, callback, id){       
+        
+        try{
+            if(url.indexOf('http') == -1){url= 'http://'+ url;}
+            const myURL = new URL(url);        
+            if("http:" == myURL.protocol){// Prints http:
+                callback(0, url, id);                
+            }else if("https:" == myURL.protocol){// Prints https:
+                callback(1, url, id);
+            }else{
+                callback(-1, null, id);
+            }
+        }catch(err){
+            console.log(err);
+            callback(-1, null, id);
         }
+
+        
     },
     get: function(url, callback, _id) {       
         http.get(url, (res) => {
@@ -46,7 +45,7 @@ module.exports = {
                 }
             });
         }).on('error', (e) => {
-            console.log(`Got error: ${e.message}`);
+            callback(e.message, _id);
         });
 
 

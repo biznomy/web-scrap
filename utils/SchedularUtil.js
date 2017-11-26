@@ -31,8 +31,8 @@ var scheduleUtil = {
             scheduleUtil.phaseone = schedule.scheduleJob(rule, function() {                
                 console.log('Every minute Schedular : ' + new Date().toString());
                 
-                // const query = { $or: [{ 'status': false }, { 'status': null }] };                
-                const query = { $and: [ { "tag": { $not: { $in: ["recheck"] } } }, { $or: [ { "status": false }, { "status": null } ] } ] };                
+                const query = { $or: [{ 'status': false }, { 'status': null }] };                
+                // const query = { $and: [ { "tag": { $not: { $in: ["recheck"] } } }, { $or: [ { "status": false }, { "status": null } ] } ] };                
                 const fields = [];
                 const skipSteps = { skip: step }
                 WebpageModel.findOne(query, fields, skipSteps, function(err, info) {                    
@@ -41,18 +41,9 @@ var scheduleUtil = {
                     } else if (info != null) {
                         console.log('for : ', info._id, ', Date : ', new Date());
                         console.log('for : ', info.url, ', Date : ', new Date());                      
-                        if(info.url.indexOf('http') == -1){
-                            httpUtil.secure('https://'+info.url, scheduleUtil.successStage1, info._id);    
-                        }else{
-                            let status = httpUtil.fetch(info.url);
-                            if(status == 0){
-                                httpUtil.get(info.url, scheduleUtil.successStage1, info._id);    
-                            }else if(status == 1){
-                                httpUtil.secure(info.url, scheduleUtil.successStage1, info._id);    
-                            }
-                        }                        
+                        httpUtil.fetch(info.url, scheduleUtil.checkURLStatus, info._id);
                     }//close fetch
-                    else if(info != null){
+                    else if(info == null){
                             console.log('for no result: scrapper (phase one) is signout , result : ', info , new Date());
                             scheduleUtil.scrapStage1.cancel();
                     } 
@@ -60,16 +51,28 @@ var scheduleUtil = {
                 });
             });
         },
-        successStage1 : function(data, id){
+        checkURLStatus : function(status, url, id){
+            if(status == 0){
+                httpUtil.get(url, scheduleUtil.webpageScraped, id);    
+            }else if(status == 1){
+                httpUtil.secure(url, scheduleUtil.webpageScraped, id);    
+            }else{
+                scheduleUtil.webpageScraped(null, id);
+            }
+        },
+        webpageScraped : function(data, id){
             // console.log(data);
             console.log(id);
             WebpageModel.findById(id , function(err, info) {
                 if (!err) {
-                    info.detail = data;
-                    info.status = true;
-                    info.tags.push("stage1");
+                    if(data ==  null){
+                        info.tags.push("invalidUrl");
+                    }else{
+                        info.tags.push("stage1");
+                        info.detail = data;
+                    }                    
+                    info.status = true;                    
                     info.save();
-                    // console.log(info);                                    
                 } else {
                     console.log(err);
                 }
