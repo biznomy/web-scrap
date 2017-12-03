@@ -53,7 +53,7 @@ module.exports = {
     secure: function(url, callback, _id) {
 
         https.get(url, (res) => {
-            var response = '';
+            let response = '';
             if (res.statusCode == 200) {
                 res.on('data', (d) => {
                     response+=d;
@@ -61,6 +61,8 @@ module.exports = {
                 res.on('end', () => {
                     callback(response.toString('utf8'), _id);
                 });
+            }else{
+                callback(res.statusCode, _id);
             }
         }).on('error', (e) => {
             callback(e.message.toString('utf8'), _id);
